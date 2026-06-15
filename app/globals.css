@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-muted/40 text-foreground antialiased;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    animation: fade-in 0.15s ease-out;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
