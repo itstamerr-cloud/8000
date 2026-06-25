@@ -65,7 +65,7 @@ export default async function EmployeePage({
             <p className="text-sm text-muted-foreground">اليوم {latestDay}</p>
           )}
         </div>
-        <AutoRefresh />
+        <AutoRefresh hasData={attempts.length > 0} />
       </header>
 
       <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">
