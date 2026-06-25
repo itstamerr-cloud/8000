@@ -15,6 +15,11 @@ export function createSupabaseServerClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // Bypass the Next.js Data Cache so admin views always read fresh data.
+      global: {
+        fetch: (input: RequestInfo | URL, init?: RequestInit) =>
+          fetch(input, { ...init, cache: "no-store" }),
+      },
       cookies: {
         getAll() {
           return cookieStore.getAll();

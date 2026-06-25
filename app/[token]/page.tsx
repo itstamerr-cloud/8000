@@ -5,6 +5,8 @@ import { EmployeeCard, type EmployeeAttempt } from "@/components/employee-card";
 import { AutoRefresh } from "@/components/auto-refresh";
 
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+export const revalidate = 0;
 
 // Reserved root segments handled by their own routes — never treat as a token.
 const RESERVED = new Set(["login", "accounts", "redistribute"]);
