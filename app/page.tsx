@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, ChevronLeft, Database, Send, Layers, Inbox } from "lucide-react";
+import { ChevronRight, ChevronLeft, Database, Send, Layers, Inbox, Download } from "lucide-react";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AdminNav } from "@/components/admin-nav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,7 +101,16 @@ export default async function DashboardPage({
               نظرة عامة على توزيع الحسابات وتقدّم الفريق
             </p>
           </div>
-          <DistributeButton nextDay={nextDay} />
+          <div className="flex items-center gap-2">
+            <a
+              href="/api/export"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-input bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <Download className="h-4 w-4" />
+              تحميل Excel
+            </a>
+            <DistributeButton nextDay={nextDay} />
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
