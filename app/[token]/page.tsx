@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Info } from "lucide-react";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { EmployeeCard, type EmployeeAttempt } from "@/components/employee-card";
+import { AutoRefresh } from "@/components/auto-refresh";
 
 export const dynamic = "force-dynamic";
 
@@ -56,12 +57,15 @@ export default async function EmployeePage({
 
   return (
     <main className="mx-auto max-w-xl space-y-5 p-4 py-6">
-      <header className="space-y-1">
-        <p className="text-sm text-muted-foreground">حسابات اليوم</p>
-        <h1 className="text-2xl font-bold">{employee.name}</h1>
-        {latestDay !== null && (
-          <p className="text-sm text-muted-foreground">اليوم {latestDay}</p>
-        )}
+      <header className="flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">حسابات اليوم</p>
+          <h1 className="text-2xl font-bold">{employee.name}</h1>
+          {latestDay !== null && (
+            <p className="text-sm text-muted-foreground">اليوم {latestDay}</p>
+          )}
+        </div>
+        <AutoRefresh />
       </header>
 
       <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">
