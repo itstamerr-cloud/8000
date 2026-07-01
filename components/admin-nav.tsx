@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Shuffle, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Shuffle, LogOut, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
@@ -51,13 +51,22 @@ export function AdminNav() {
             })}
           </nav>
         </div>
-        <button
-          onClick={signOut}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
-        >
-          <LogOut className="h-4 w-4" />
-          <span className="hidden sm:inline">خروج</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <a
+            href="/api/export"
+            className="flex items-center gap-2 rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+          >
+            <Download className="h-4 w-4" />
+            <span className="hidden sm:inline">تحميل Excel</span>
+          </a>
+          <button
+            onClick={signOut}
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">خروج</span>
+          </button>
+        </div>
       </div>
     </header>
   );
