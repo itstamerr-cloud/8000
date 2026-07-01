@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
+import { Info, CheckCircle2 } from "lucide-react";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { EmployeeCard, type EmployeeAttempt } from "@/components/employee-card";
 import { AutoRefresh } from "@/components/auto-refresh";
@@ -45,6 +45,7 @@ export default async function EmployeePage({
       .select("id, status, note, accounts ( name, region, sector, seq )")
       .eq("employee_id", employee.id)
       .eq("day", latestDay)
+      .eq("status", "pending") // only accounts not yet answered are shown
       .order("id", { ascending: true })
       .limit(5); // hard ceiling — an employee sees at most 5
     attempts = (data ?? []).map((a: any) => ({
@@ -67,23 +68,29 @@ export default async function EmployeePage({
             <p className="text-sm text-muted-foreground">اليوم {latestDay}</p>
           )}
         </div>
-        <AutoRefresh hasData={attempts.length > 0} />
+        <AutoRefresh hasData={latestDay !== null} />
       </header>
 
       <div className="flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">
         <Info className="h-4 w-4 shrink-0" />
-        تشاهد 5 حسابات فقط — حدّث الحالة وأضف ملاحظتك لكل حساب.
+        لكل حساب: اختر الحالة واكتب الملاحظة ثم «اعتماد الرد». بعد الاعتماد يُثبَّت الرد ويختفي الحساب.
       </div>
 
-      {attempts.length === 0 ? (
-        <div className="rounded-lg border border-border bg-white p-10 text-center text-muted-foreground">
-          لا توجد حسابات مُسندة إليك حالياً. تواصل مع المشرف.
-        </div>
-      ) : (
+      {attempts.length > 0 ? (
         <div className="space-y-4">
           {attempts.map((a, i) => (
             <EmployeeCard key={a.id} token={token} attempt={a} index={i + 1} />
           ))}
+        </div>
+      ) : latestDay !== null ? (
+        <div className="flex flex-col items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-10 text-center text-emerald-800">
+          <CheckCircle2 className="h-8 w-8" />
+          <p className="font-semibold">أنجزت كل حساباتك 🎉</p>
+          <p className="text-sm">لا يوجد ما تبقّى لهذا اليوم.</p>
+        </div>
+      ) : (
+        <div className="rounded-lg border border-border bg-white p-10 text-center text-muted-foreground">
+          لا توجد حسابات مُسندة إليك حالياً. تواصل مع المشرف.
         </div>
       )}
     </main>

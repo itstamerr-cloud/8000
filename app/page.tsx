@@ -104,7 +104,7 @@ export default async function DashboardPage({
           <div className="flex items-center gap-2">
             <a
               href="/api/export"
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-input bg-white px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700"
             >
               <Download className="h-4 w-4" />
               تحميل Excel

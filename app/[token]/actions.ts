@@ -8,9 +8,16 @@ import type { AttemptStatus } from "@/lib/types";
 type SaveResult = { ok: boolean; message: string };
 
 /**
- * Save an attempt's status/note. Runs on the server with the service-role key.
- * Security: the update is scoped to the employee that owns `token`, so a
- * caller can never write to another employee's attempts.
+ * Commit an attempt's answer (status + note). Runs on the server with the
+ * service-role key.
+ *
+ * Rules enforced here (server-side, authoritative):
+ *  - The answer must be a real status (not "pending").
+ *  - The update is scoped to the employee that owns `token`, so a caller can
+ *    never write to another employee's attempts.
+ *  - It is FINAL: the `.eq("status","pending")` guard makes the update atomic,
+ *    so an already-answered attempt can never be edited (and a double click /
+ *    race commits exactly once).
  */
 export async function saveAttemptAction(
   token: string,
@@ -18,8 +25,8 @@ export async function saveAttemptAction(
   status: AttemptStatus,
   note: string
 ): Promise<SaveResult> {
-  if (!(status in STATUS_LABELS)) {
-    return { ok: false, message: "حالة غير صحيحة" };
+  if (!(status in STATUS_LABELS) || status === "pending") {
+    return { ok: false, message: "اختر حالة الرد أولاً" };
   }
 
   const supabase = createSupabaseAdminClient();
@@ -31,19 +38,18 @@ export async function saveAttemptAction(
     .single();
   if (!employee) return { ok: false, message: "رابط غير صالح" };
 
-  // The .eq("employee_id", employee.id) guard is the security boundary:
-  // an attempt that belongs to another employee will not be matched.
   const { data, error } = await supabase
     .from("attempts")
     .update({ status, note, updated_at: new Date().toISOString() })
     .eq("id", attemptId)
     .eq("employee_id", employee.id)
+    .eq("status", "pending") // finality: only an unanswered attempt can be committed
     .select("id");
 
   if (error) return { ok: false, message: error.message };
   if (!data || data.length === 0)
-    return { ok: false, message: "لا يمكن تعديل هذا الحساب" };
+    return { ok: false, message: "تم اعتماد هذا الحساب مسبقاً ولا يمكن تعديله" };
 
   revalidatePath(`/${token}`);
-  return { ok: true, message: "تم الحفظ" };
+  return { ok: true, message: "تم اعتماد الرد" };
 }
